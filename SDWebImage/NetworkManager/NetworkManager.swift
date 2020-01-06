@@ -8,7 +8,7 @@
 import Foundation
 
 public class NetworkManager {
-  public func sendRequest(urlPath: String, parameters: [String: Any], httpMethod: String = "POST",  completionHandler: @escaping(_ response: Any?, _ error: Error?) -> Void) {
+  public static func sendRequest(urlPath: String, parameters: [String: Any], httpMethod: String = "POST",  completionHandler: @escaping(_ response: Any?, _ error: Error?) -> Void) {
     
     let url = URL(string: urlPath)
     
