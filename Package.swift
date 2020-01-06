@@ -43,7 +43,7 @@ let package = Package(
         ),
         .target(
             name: "SDWebImageMapKit",
-            dependencies: ["SDWebImage"],
+            dependencies: [],
             path: ".",
             sources: ["SDWebImage/MapKit"],
             publicHeadersPath: "SDWebImage/MapKit",
@@ -54,7 +54,7 @@ let package = Package(
         ),
         .target(
             name: "SDNetworkManager",
-            dependencies: ["SDWebImage"],
+            dependencies: [],
             path: ".",
             sources: ["SDWebImage/NetworkManager"]
         )
