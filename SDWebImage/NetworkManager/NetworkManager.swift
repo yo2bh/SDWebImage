@@ -6,35 +6,44 @@
 //
 
 import Foundation
+import UIKit
 
-public class NetworkManager {
-  public static func sendRequest(urlPath: String, parameters: [String: Any]?, httpMethod: String? = "POST",  completionHandler: @escaping(_ response: Any?, _ error: Error?) -> Void) {
-    
-    let url = URL(string: urlPath)
-    
-    var request = URLRequest(url: url!)
-    request.addValue(WalletConstants.applicationJSON, forHTTPHeaderField: WalletConstants.contentType)
-    request.httpMethod = httpMethod
-    do {
-      if let parameter = parameters {
-        request.httpBody = try JSONSerialization.data(withJSONObject: parameter, options: .prettyPrinted)
+public enum RequestType: String {
+  case Post = "POST"
+  case Get = "GET"
+  case Put = "PUT"
+}
+
+class NetworkManager {
+  static let shared = NetworkManager()
+  
+  private init() {
+    print("Initalized the network manager instance")
+  }
+  
+  func sendRequest(urlString: String, type: RequestType = .Post, parameters: [String :Any]?, completionHandler: @escaping(Data?, Error?) -> Void) {
+    // 1. Make URL from UrlString
+    let url = URL(string: urlString)
+    // 2. Create the URLRequest object
+    var urlRequest = URLRequest(url: url!)
+    // 3. Set httpMethod like POST, GET etc
+    urlRequest.httpMethod = type.rawValue
+    // 4. Add if any parameter
+//    urlRequest.addValue("application/json", forHTTPHeaderField: "Content-Type")
+//    urlRequest.addValue("1", forHTTPHeaderField: "value")
+    // 5. Create http body if have
+//    do {
+//      urlRequest.httpBody = try JSONSerialization.data(withJSONObject: parameters, options: .prettyPrinted)
+//    } catch let error {
+//      completionHandler(nil, error)
+//    }
+    // 6. Send request - dataTask
+    UIApplication.shared.isNetworkActivityIndicatorVisible = true
+    URLSession.shared.dataTask(with: urlRequest) { (data, response, error) in
+      DispatchQueue.main.async {
+        UIApplication.shared.isNetworkActivityIndicatorVisible = false
       }
-    } catch let error {
-      completionHandler(nil, error)
-    }
-    
-    URLSession.shared.dataTask(with: request, completionHandler: { data, response, error in
-      do {
-        if let data = data,
-          let json = try JSONSerialization.jsonObject(with: data, options: .mutableContainers) as? NSDictionary {
-          print("JSON ---- > \(json)")
-          completionHandler(json, nil)
-        } else {
-          completionHandler(nil, error)
-        }
-      } catch let error {
-        completionHandler(nil, error)
-      }
-    }).resume()
+      completionHandler(data, error)
+    }.resume()
   }
 }
