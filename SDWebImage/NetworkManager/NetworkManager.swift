@@ -15,7 +15,7 @@ public enum RequestType: String {
 }
 
 public class NetworkManager {
-  static let shared = NetworkManager()
+  public static let shared = NetworkManager()
   
   private init() {
     print("Initalized the network manager instance")
