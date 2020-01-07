@@ -8,7 +8,7 @@
 import Foundation
 
 public class NetworkManager {
-  public static func sendRequest(urlPath: String, parameters: [String: Any], httpMethod: String = "POST",  completionHandler: @escaping(_ response: Any?, _ error: Error?) -> Void) {
+  public static func sendRequest(urlPath: String, parameters: [String: Any]?, httpMethod: String? = "POST",  completionHandler: @escaping(_ response: Any?, _ error: Error?) -> Void) {
     
     let url = URL(string: urlPath)
     
@@ -16,7 +16,9 @@ public class NetworkManager {
     request.addValue(WalletConstants.applicationJSON, forHTTPHeaderField: WalletConstants.contentType)
     request.httpMethod = httpMethod
     do {
-      request.httpBody = try JSONSerialization.data(withJSONObject: parameters, options: .prettyPrinted)
+      if let parameter = parameters {
+        request.httpBody = try JSONSerialization.data(withJSONObject: parameter, options: .prettyPrinted)
+      }
     } catch let error {
       completionHandler(nil, error)
     }
